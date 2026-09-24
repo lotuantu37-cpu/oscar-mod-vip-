@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Trị - Admin Panel</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Style cho Form Đăng nhập / Đăng ký */
+        .auth-container {
+            max-width: 420px;
+            margin: 80px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .auth-header h4 {
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Style cho Admin Dashboard */
+        .sidebar {
+            width: 260px;
+            background: #ffffff;
+            min-height: 100vh;
+            border-right: 1px solid #e0e0e0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+        .sidebar-header {
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0d6efd;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .nav-link {
+            color: #495057;
+            padding: 12px 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #e8f0fe;
+            color: #0d6efd;
+            border-radius: 8px;
+            margin: 0 10px;
+        }
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #8c98a4;
+            font-weight: bold;
+            padding: 15px 20px 5px;
+        }
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        @media (max-width: 768px) {
+            .sidebar { margin-left: -260px; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== FORM XÁC THỰC (ĐĂNG NHẬP / ĐĂNG KÝ) ==================== -->
+    <div id="authSection" class="container">
+        
+        <!-- Form Đăng Nhập -->
+        <div id="loginCard" class="auth-container">
+            <div class="auth-header">
+                <h4><i class="fa-solid fa-shield-halved me-2"></i>ĐĂNG NHẬP ADMIN</h4>
+                <p class="text-muted small">Vui lòng đăng nhập để truy cập Admin Panel</p>
+            </div>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label font-weight-bold">Tên đăng nhập</label>
+                    <input type="text" id="loginUsername" class="form-control" placeholder="Nhập tên đăng nhập" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Nhập mật khẩu" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Đăng Nhập</button>
+            </form>
+            <div class="text-center mt-3">
+                <span class="text-muted small">Chưa có tài khoản? </span>
+                <a href="#" class="small text-decoration-none fw-bold" onclick="showRegister()">Đăng ký ngay</a>
+            </div>
+        </div>
+
+        <!-- Form Đăng Ký -->
+        <div id="registerCard" class="auth-container" style="display: none;">
+            <div class="auth-header">
+                <h4><i class="fa-solid fa-user-plus me-2"></i>ĐĂNG KÝ QUẢN TRỊ</h4>
+                <p class="text-muted small">Tạo tài khoản Admin mới</p>
+            </div>
+            <div id="registerAlert"></div>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label class="form-label font-weight-bold">Tên đăng nhập</label>
+                    <input type="text" id="regUsername" class="form-control" placeholder="Nhập tên đăng nhập" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="Nhập mật khẩu" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Xác nhận mật khẩu</label>
+                    <input type="password" id="regConfirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100 fw-bold py-2">Đăng Ký Tài Khoản</button>
+            </form>
+            <div class="text-center mt-3">
+                <span class="text-muted small">Đã có tài khoản? </span>
+                <a href="#" class="small text-decoration-none fw-bold" onclick="showLogin()">Đăng nhập</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== TRANG QUẢN TRỊ (ADMIN PANEL) ==================== -->
+    <div id="adminPanelSection" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-shield-halved me-2"></i>ADMINPANEL</span>
+            </div>
+            <div class="nav flex-column mt-2">
+                <div class="nav-section-title">MAIN</div>
+                <a href="#" class="nav-link active"><i class="fa-solid fa-border-all"></i> Tổng Quan</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> Lịch Sử Hệ Thống</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-users"></i> Người Dùng</a>
+
+                <div class="nav-section-title">TRÒ CHƠI & DỊCH VỤ</div>
+                <a href="#" class="nav-link"><i class="fa-solid fa-gamepad text-primary"></i> Kho Hack Free</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-key"></i> Lịch Sử Nhận Key</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-3 shadow-sm">
+                <h5 class="m-0 font-weight-bold"><i class="fa-solid fa-user-shield me-2 text-primary"></i>Xin chào, <span id="currentUserDisplay">Admin</span>!</h5>
+                <button class="btn btn-outline-danger btn-sm fw-bold" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> Đăng Xuất
+                </button>
+            </div>
+
+            <!-- Thống kê nhanh -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="card stat-card p-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small fw-bold">THÀNH VIÊN</div>
+                                <h4 class="fw-bold mb-0 mt-1">132</h4>
+                            </div>
+                            <div class="icon-box bg-primary-subtle text-primary">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card p-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small fw-bold">DOANH THU</div>
+                                <h4 class="fw-bold mb-0 mt-1 text-success">5,000,000đ</h4>
+                            </div>
+                            <div class="icon-box bg-success-subtle text-success">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card p-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small fw-bold">NHIỆM VỤ (F2P)</div>
+                                <h4 class="fw-bold mb-0 mt-1 text-warning">36</h4>
+                            </div>
+                            <div class="icon-box bg-warning-subtle text-warning">
+                                <i class="fa-solid fa-crosshairs"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card p-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small fw-bold">KEY NỘI BỘ</div>
+                                <h4 class="fw-bold mb-0 mt-1 text-info">26</h4>
+                            </div>
+                            <div class="icon-box bg-info-subtle text-info">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng danh sách Game mẫu -->
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white py-3 fw-bold">
+                    <i class="fa-solid fa-gamepad text-danger me-2"></i> Bảng Quản Lý Trò Chơi
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>TÊN TRÒ CHƠI</th>
+                                    <th>LOẠI</th>
+                                    <th>KHO KEY</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#12</td>
+                                    <td><strong>Menu migul pro real</strong></td>
+                                    <td><span class="badge bg-primary">Nội Bộ</span> <span class="badge bg-dark">iOS</span></td>
+                                    <td><span class="badge bg-info text-dark">11 Key</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#4</td>
+                                    <td><strong>Menu zenny mod</strong></td>
+                                    <td><span class="badge bg-primary">Nội Bộ</span> <span class="badge bg-secondary">No Root</span></td>
+                                    <td><span class="badge bg-info text-dark">9 Key</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Xử Lý Đăng Ký / Đăng Nhập -->
+    <script>
+        // Chuyển đổi giữa Đăng Nhập và Đăng Ký
+        function showRegister() {
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('registerCard').style.display = 'block';
+            document.getElementById('registerAlert').innerHTML = '';
+        }
+
+        function showLogin() {
+            document.getElementById('registerCard').style.display = 'none';
+            document.getElementById('loginCard').style.display = 'block';
+            document.getElementById('loginAlert').innerHTML = '';
+        }
+
+        // Kiểm tra xem đã đăng nhập chưa khi mở trang
+        window.onload = function() {
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                showAdminPanel(loggedInUser);
+            }
+        };
+
+        // Xử lý ĐĂNG KÝ
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const alertBox = document.getElementById('registerAlert');
+
+            // Kiểm tra Mật khẩu và Xác nhận mật khẩu
+            if (password !== confirmPassword) {
+                alertBox.innerHTML = `<div class="alert alert-danger p-2 small">Mật khẩu xác nhận không khớp!</div>`;
+                return;
+            }
+
+            // Lấy danh sách tài khoản đã lưu
+            let users = JSON.parse(localStorage.getItem('admin_users')) || [];
+
+            // Kiểm tra trùng tên đăng nhập
+            if (users.some(u => u.username === username)) {
+                alertBox.innerHTML = `<div class="alert alert-danger p-2 small">Tên đăng nhập đã tồn tại!</div>`;
+                return;
+            }
+
+            // Lưu tài khoản mới
+            users.push({ username: username, password: password });
+            localStorage.setItem('admin_users', JSON.stringify(users));
+
+            alertBox.innerHTML = `<div class="alert alert-success p-2 small">Đăng ký thành công! Vui lòng đăng nhập.</div>`;
+            setTimeout(() => {
+                showLogin();
+                document.getElementById('loginUsername').value = username;
+            }, 1500);
+        });
+
+        // Xử lý ĐĂNG NHẬP
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const alertBox = document.getElementById('loginAlert');
+
+            let users = JSON.parse(localStorage.getItem('admin_users')) || [];
+
+            // Kiểm tra thông tin tài khoản
+            const validUser = users.find(u => u.username === username && u.password === password);
+
+            if (validUser) {
+                sessionStorage.setItem('loggedInUser', username);
+                showAdminPanel(username);
+            } else {
+                alertBox.innerHTML = `<div class="alert alert-danger p-2 small">Tên đăng nhập hoặc mật khẩu không đúng!</div>`;
+            }
+        });
+
+        // Hiển thị Trang Admin
+        function showAdminPanel(username) {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('adminPanelSection').style.display = 'block';
+            document.getElementById('currentUserDisplay').innerText = username;
+        }
+
+        // Đăng xuất
+        function logout() {
+            sessionStorage.removeItem('loggedInUser');
+            document.getElementById('adminPanelSection').style.display = 'none';
+            document.getElementById('authSection').style.display = 'block';
+            showLogin();
+        }
+    </script>
+</body>
+  </html>
+      
